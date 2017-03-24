@@ -13,11 +13,13 @@ Plugin 'cakebaker/scss-syntax.vim'
 Plugin 'dietsche/vim-lastplace'
 Plugin 'guns/xterm-color-table.vim'
 Plugin 'jelera/vim-javascript-syntax'
+Plugin 'junegunn/vim-easy-align'
 Plugin 'kien/ctrlp.vim'
 Plugin 'klen/python-mode'
 Plugin 'L9'
 Plugin 'Lokaltog/vim-easymotion'
 Plugin 'mattn/emmet-vim'
+Plugin 'mkitt/tabline.vim'
 Plugin 'nathanaelkane/vim-indent-guides'
 Plugin 'othree/html5.vim'
 Plugin 'othree/javascript-libraries-syntax.vim'
@@ -152,20 +154,17 @@ let g:syntastic_javascript_checkers=['jshint']
 
 "Shougo/neocomplcache.vim
 let g:neocomplcache_enable_at_startup = 1
-if !exists('g:neocomplcache_omni_patterns')
-    let g:neocomplcache_omni_patterns = {}
-endif
-let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-let g:neocomplcache_omni_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
-let g:neocomplcache_omni_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
-autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+let g:neocomplcache_enable_smart_case = 1
 
 "taglist
 nnoremap <silent> <F8> :TlistToggle<CR>
 
 "pymode
 let g:pymode_options_colorcolumn = 0
+
+"vim-easy-align
+"usage: vmode: ga*|
+nmap ga <Plug>(EasyAlign)
+xmap ga <Plug>(EasyAlign)
+" https://robots.thoughtbot.com/align-github-flavored-markdown-tables-in-vim
+vmap <Leader><Bslash> :EasyAlign*<Bar><Enter>
