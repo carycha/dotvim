@@ -3,22 +3,32 @@ let vundle_readme=expand('~/.vim/bundle/Vundle.vim/README.md')
 if !filereadable(vundle_readme)
     echo 'Installing Vundle ...'
     silent !mkdir -p ~/.vim/bundle
-    silent !git clone https://github.com/gmarik/vundle ~/.vim/bundle/Vundle.vim
+    silent !git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 endif
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
+Plugin 'airblade/vim-gitgutter'
 Plugin 'ap/vim-css-color'
+Plugin 'arnaud-lb/vim-php-namespace'
+Plugin 'avakhov/vim-yaml'
 Plugin 'c9s/colorselector.vim'
 Plugin 'cakebaker/scss-syntax.vim'
+Plugin 'chase/vim-ansible-yaml'
+Plugin 'derekwyatt/vim-scala'
 Plugin 'dietsche/vim-lastplace'
+Plugin 'ekalinin/Dockerfile.vim'
 Plugin 'guns/xterm-color-table.vim'
 Plugin 'jelera/vim-javascript-syntax'
 Plugin 'junegunn/vim-easy-align'
+Plugin 'jwalton512/vim-blade'
 Plugin 'kien/ctrlp.vim'
 Plugin 'klen/python-mode'
+Plugin 'ludovicchabant/vim-gutentags'
 Plugin 'L9'
 Plugin 'Lokaltog/vim-easymotion'
+Plugin 'majutsushi/tagbar'
 Plugin 'mattn/emmet-vim'
+Plugin 'mikehaertl/pdv-standalone'
 Plugin 'mkitt/tabline.vim'
 Plugin 'nathanaelkane/vim-indent-guides'
 Plugin 'othree/html5.vim'
@@ -34,12 +44,13 @@ Plugin 'terryma/vim-multiple-cursors'
 Plugin 'tpope/vim-ragtag'
 Plugin 'tpope/vim-surround'
 Plugin 'Townk/vim-autoclose'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 Plugin 'vim-scripts/Align'
 Plugin 'vim-scripts/matchit.zip'
 Plugin 'vim-scripts/OOP-javascript-indentation'
-Plugin 'vim-scripts/taglist.vim'
+Plugin 'VundleVim/Vundle.vim'
 Plugin 'webberwu/html.vim'
-Plugin 'webberwu/php-doc.vim'
 Plugin 'webberwu/snipmate.vim'
 Plugin 'webberwu/vim-fugitive'
 call vundle#end()
@@ -93,6 +104,7 @@ filetype plugin indent on
 autocmd BufNewFile,BufRead *.phtml set filetype=php
 autocmd BufNewFile,BufRead *.html set filetype=php
 autocmd BufNewFile,BufRead *.htm set filetype=php
+autocmd BufNewFile,BufRead *.yml set filetype=yaml
 
 highlight ExtraWhitespace ctermbg=1 guibg=red
 match ExtraWhitespace /\s\+$/
@@ -115,8 +127,9 @@ noremap me $
 noremap ms ^
 noremap .rs :%s/\s\+$//<CR>
 
-"php-doc
-inoremap <C-K> <ESC>:call PhpDocSingle()<CR>i
+"pdv-standalone
+let g:pdv_cfg_Author = 'Webber Wu <chenshin0719@gmail.com>'
+let g:pdv_cfg_Uses = 1
 nnoremap <C-K> :call PhpDocSingle()<CR>
 vnoremap <C-K> :call PhpDocRange()<CR>
 
@@ -150,14 +163,16 @@ let g:syntastic_auto_loc_list=1
 let g:syntastic_php_checkers=['php', 'phpmd']
 let g:syntastic_css_checkers=[]
 let g:syntastic_html_checkers=[]
+let g:syntastic_scala_checkers=[]
 let g:syntastic_javascript_checkers=['jshint']
 
 "Shougo/neocomplcache.vim
 let g:neocomplcache_enable_at_startup = 1
 let g:neocomplcache_enable_smart_case = 1
 
-"taglist
-nnoremap <silent> <F8> :TlistToggle<CR>
+"tagbar
+nmap <F8> :TagbarToggle<CR>
+let g:tagbar_autofocus = 1
 
 "pymode
 let g:pymode_options_colorcolumn = 0
@@ -168,3 +183,43 @@ nmap ga <Plug>(EasyAlign)
 xmap ga <Plug>(EasyAlign)
 " https://robots.thoughtbot.com/align-github-flavored-markdown-tables-in-vim
 vmap <Leader><Bslash> :EasyAlign*<Bar><Enter>
+
+"airline
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#show_buffers = 0
+let g:airline#extensions#tabline#close_symbol = '×'
+let g:airline#extensions#tabline#fnamemod = ':t'
+"airline-theme
+"screenshots: https://github.com/vim-airline/vim-airline/wiki/Screenshots
+let g:airline_theme='powerlineish'
+let g:airline_section_warning = airline#section#create_right(['%{gutentags#statusline()}', 'ycm_warning_count', 'whitespace'])
+
+"vim-gutentags
+let g:gutentags_cache_dir = '~/.cache/vim-gutentags'
+let g:gutentags_project_root = ['.project', '.vimtag']
+" :ts list match file
+" :ptselect same with :ts
+" :tp previous match file
+" :tn next match file
+nmap <C-]> :tab tag <C-R><C-W><CR>
+
+"vim-php-namespace: use statements
+let g:php_namespace_sort_after_insert = 1
+function! IPhpInsertUse()
+    call PhpInsertUse()
+    call feedkeys('a',  'n')
+endfunction
+autocmd FileType php inoremap <Leader>nu <Esc>:call IPhpInsertUse()<CR>
+autocmd FileType php noremap <Leader>nu :call PhpInsertUse()<CR>
+
+"vim-php-namespace: fully qualified
+function! IPhpExpandClass()
+    call PhpExpandClass()
+    call feedkeys('a', 'n')
+endfunction
+autocmd FileType php inoremap <Leader>nf <Esc>:call IPhpExpandClass()<CR>
+autocmd FileType php noremap <Leader>nf :call PhpExpandClass()<CR>
+
+"vim-multiple-cursors
+let g:multi_cursor_quit_key='<C-c>'
+nnoremap <C-c> :call multiple_cursors#quit()<CR>
